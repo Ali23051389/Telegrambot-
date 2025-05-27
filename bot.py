@@ -1,8 +1,12 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
+import os
 
-# لیست آی‌دی ادمین‌ها
-ADMIN_IDS = [7108445844]  # اینجا آی‌دی خودت رو بذار
+# لیست آی‌دی‌های ادمین – آی‌دی خودت رو اینجا وارد کن
+ADMIN_IDS = [123456789]  # ← این عدد رو با آیدی خودت جایگزین کن
+
+# گرفتن توکن از متغیر محیطی
+TOKEN = os.environ.get("BOT_TOKEN")
 
 # دستور /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -12,7 +16,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("سلام! به ربات خوش اومدی.")
 
-# نمایش منوی ادمین
+# نمایش منوی مدیریت برای ادمین
 async def show_admin_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
         ["مشاهده سفارش‌ها"],
@@ -22,7 +26,7 @@ async def show_admin_panel(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
     await update.message.reply_text("پنل مدیریت:", reply_markup=reply_markup)
 
-# هندل کردن پیام‌ها (برای تست فقط پیام متنی)
+# هندل کردن پیام‌های متنی
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     if user_id in ADMIN_IDS:
@@ -38,12 +42,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         await update.message.reply_text("شما دسترسی به این بخش ندارید.")
 
-# اجرای ربات
+# راه‌اندازی ربات
 if __name__ == '__main__':
-    app = ApplicationBuilder().token("توکن_ربات_تو").build()
+    if not TOKEN:
+        print("BOT_TOKEN تعریف نشده! لطفاً توکن را در Render به عنوان Environment Variable تعریف کنید.")
+    else:
+        app = ApplicationBuilder().token(TOKEN).build()
+        app.add_handler(CommandHandler("start", start))
+        app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+        print("ربات اجرا شد.")
+        app.run_polling()
 
-    print("ربات اجرا شد.")
-    app.run_polling()
