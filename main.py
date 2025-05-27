@@ -49,6 +49,6 @@ async def main():
         webhook_url=WEBHOOK_URL,
     )
 
-if name == "main":
+if __name__ == __main__:
     import asyncio
     asyncio.run(main())
