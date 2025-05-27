@@ -3,7 +3,7 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, fil
 import os
 
 # لیست آی‌دی‌های ادمین – آی‌دی خودت رو اینجا وارد کن
-ADMIN_IDS = [123456789]  # ← این عدد رو با آیدی خودت جایگزین کن
+ADMIN_IDS = [7108445844]  # ← این عدد رو با آیدی خودت جایگزین کن
 
 # گرفتن توکن از متغیر محیطی
 TOKEN = os.environ.get("BOT_TOKEN")
